@@ -7,9 +7,5 @@ ADAPTORS = {
 
 }
 
-def get_adaptor(model_type:str)->Adaptor:
-    if model_type in ADAPTORS:
-        return ADAPTORS[model_type]
-    else:
-        # Default for models with no special cases
-        return Adaptor()
+def get_adaptor(model_type:str) -> Adaptor:
+    return ADAPTORS[model_type] if model_type in ADAPTORS else Adaptor()

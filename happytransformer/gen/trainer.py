@@ -116,8 +116,7 @@ class GENTrainer(HappyTrainer):
         :param name: A string to specify if the written data is for "Train" or "Eval"
         :return: None
         """
-        data = {}
-        data[name] = []
+        data = {name: []}
         data = {
             name: [
                 {

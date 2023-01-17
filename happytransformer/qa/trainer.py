@@ -144,15 +144,14 @@ class QATrainer(HappyTrainer):
                 contexts.append(row['context'])
                 questions.append(row['question'])
                 if not test_data:
-                    answer = {}
-                    answer["answer_text"] = row['answer_text']
-                    answer["answer_start"] = int(row['answer_start'])
+                    answer = {
+                        "answer_text": row['answer_text'],
+                        "answer_start": int(row['answer_start']),
+                    }
                     answers.append(answer)
         csv_file.close()
 
-        if not test_data:
-            return contexts, questions, answers
-        return contexts, questions
+        return (contexts, questions) if test_data else (contexts, questions, answers)
 
     @staticmethod
     def __add_end_idx(contexts, answers):
@@ -190,8 +189,7 @@ class QATrainer(HappyTrainer):
 
     @staticmethod
     def _generate_json(json_path, input_ids, attention_masks, start_positions, end_positions, name):
-        data = {}
-        data[name] = []
+        data = {name: []}
         data = {
             name: [
                 {
@@ -233,13 +231,12 @@ class QATrainer(HappyTrainer):
             start_positions.append(case['start_positions'])
             end_positions.append(case['end_positions'])
 
-        encodings = {
+        return {
             "input_ids": input_ids,
             "attention_mask": attention_mask,
             "start_positions": start_positions,
-            "end_positions": end_positions}
-
-        return encodings
+            "end_positions": end_positions,
+        }
 
 
 class QuestionAnsweringDataset(torch.utils.data.Dataset):

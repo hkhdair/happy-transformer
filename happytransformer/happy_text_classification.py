@@ -30,12 +30,18 @@ class HappyTextClassification(HappyTransformer):
 
         config = AutoConfig.from_pretrained(model_name, num_labels=num_labels)
 
-        if load_path != "":
-            model = AutoModelForSequenceClassification.from_pretrained(load_path, config=config, from_tf=from_tf)
-        else:
-            model = AutoModelForSequenceClassification.from_pretrained(model_name, config=config, use_auth_token=use_auth_token, from_tf=from_tf)
-
-
+        model = (
+            AutoModelForSequenceClassification.from_pretrained(
+                load_path, config=config, from_tf=from_tf
+            )
+            if load_path
+            else AutoModelForSequenceClassification.from_pretrained(
+                model_name,
+                config=config,
+                use_auth_token=use_auth_token,
+                from_tf=from_tf,
+            )
+        )
         super().__init__(model_type, model_name, model, use_auth_token=use_auth_token, load_path=load_path)
 
         device_number = detect_cuda_device_number()

@@ -61,9 +61,8 @@ class HappyTrainer:
         :param output_path: A string to a temporary directory
         :return: A TrainingArguments object
         """
-        if self.device != "cuda":
-            if dataclass_args.fp16:
-                ValueError("fp16 is only available when CUDA/ a GPU is being used. ")
+        if self.device != "cuda" and dataclass_args.fp16:
+            ValueError("fp16 is only available when CUDA/ a GPU is being used. ")
 
         return TrainingArguments(
             output_dir=output_path,

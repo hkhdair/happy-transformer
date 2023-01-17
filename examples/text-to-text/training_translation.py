@@ -6,7 +6,7 @@ def main():
     happy_tt = HappyTextToText("MT5", "google/mt5-base")
     text = "Hello, I like to eat apples."
     # Google translate translation: سلام من عاشق خوردن سیب هستم.
-    before_text = happy_tt.generate_text("translate English to Persian: " + text)
+    before_text = happy_tt.generate_text(f"translate English to Persian: {text}")
 
     train_dataset = load_dataset("persiannlp/parsinlu_translation_en_fa", split='train[0:3999]')
     eval_dataset = load_dataset("persiannlp/parsinlu_translation_en_fa", split='validation[0:399]')
@@ -20,7 +20,7 @@ def main():
     train_args = TTTrainArgs(num_train_epochs=1, max_input_length=1024, max_output_length=1024)
     happy_tt.train("train.csv", args=train_args)
 
-    after_text = happy_tt.generate_text("translate English to Persian: " + text)
+    after_text = happy_tt.generate_text(f"translate English to Persian: {text}")
 
     after_loss = happy_tt.eval("eval.csv", args=eval_args)
 
