@@ -45,12 +45,13 @@ class HappyTextToText(HappyTransformer):
 
         self.adaptor = get_adaptor(model_type)
 
-        if load_path != "":
-            model = AutoModelForSeq2SeqLM.from_pretrained(load_path, from_tf=from_tf)
-        else:
-            model = AutoModelForSeq2SeqLM.from_pretrained(model_name, use_auth_token=use_auth_token, from_tf=from_tf)
-
-
+        model = (
+            AutoModelForSeq2SeqLM.from_pretrained(load_path, from_tf=from_tf)
+            if load_path
+            else AutoModelForSeq2SeqLM.from_pretrained(
+                model_name, use_auth_token=use_auth_token, from_tf=from_tf
+            )
+        )
         super().__init__(model_type, model_name, model, use_auth_token=use_auth_token, load_path=load_path)
 
         device_number = detect_cuda_device_number()
@@ -116,8 +117,7 @@ class HappyTextToText(HappyTransformer):
         return: an EvalResult() object
         """
 
-        result = self._trainer.eval(input_filepath=input_filepath, dataclass_args=args)
-        return result
+        return self._trainer.eval(input_filepath=input_filepath, dataclass_args=args)
 
 
     def test(self, input_filepath, args=TTTestArgs):

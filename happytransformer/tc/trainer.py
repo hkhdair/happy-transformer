@@ -125,14 +125,11 @@ class TCTrainer(HappyTrainer):
                     labels.append(int(row['label']))
         csv_file.close()
 
-        if not test_data:
-            return contexts, labels
-        return contexts
+        return contexts if test_data else (contexts, labels)
 
     @staticmethod
     def _generate_json(json_path, input_ids, attention_mask, labels, name):
-        data = {}
-        data[name] = []
+        data = {name: []}
         data = {
             name: [
                 {
@@ -204,8 +201,7 @@ class TextClassificationDatasetTest(torch.utils.data.Dataset):
         self.length = length
 
     def __getitem__(self, idx):
-        item = {key: torch.tensor(val[idx]) for key, val in self.encodings.items()}
-        return item
+        return {key: torch.tensor(val[idx]) for key, val in self.encodings.items()}
 
     def __len__(self):
         return self.length

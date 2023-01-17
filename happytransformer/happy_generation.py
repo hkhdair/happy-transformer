@@ -49,11 +49,13 @@ class HappyGeneration(HappyTransformer):
 
         self.adaptor = get_adaptor(model_type)
 
-        if load_path != "":
-            model = AutoModelForCausalLM.from_pretrained(load_path, from_tf=from_tf)
-        else:
-            model = AutoModelForCausalLM.from_pretrained(model_name, use_auth_token=use_auth_token, from_tf=from_tf)
-
+        model = (
+            AutoModelForCausalLM.from_pretrained(load_path, from_tf=from_tf)
+            if load_path
+            else AutoModelForCausalLM.from_pretrained(
+                model_name, use_auth_token=use_auth_token, from_tf=from_tf
+            )
+        )
         super().__init__(model_type, model_name, model, use_auth_token=use_auth_token, load_path=load_path)
         device_number = detect_cuda_device_number()
 
@@ -86,7 +88,10 @@ class HappyGeneration(HappyTransformer):
         adjusted_min_length = args.min_length + len(input_ids[0])
         adjusted_max_length = args.max_length + len(input_ids[0])
         if args.bad_words:
-            bad_words_ids = [self.tokenizer(" "+phrase.strip()).input_ids for phrase in args.bad_words]
+            bad_words_ids = [
+                self.tokenizer(f" {phrase.strip()}").input_ids
+                for phrase in args.bad_words
+            ]
         else:
             bad_words_ids = None
         output = self._pipeline(text, min_length=adjusted_min_length,

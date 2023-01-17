@@ -27,11 +27,13 @@ class HappyWordPrediction(HappyTransformer):
 
         self.adaptor = get_adaptor(model_type)
 
-        if load_path != "":
-            model = AutoModelForMaskedLM.from_pretrained(load_path, from_tf=from_tf)
-        else:
-            model = AutoModelForMaskedLM.from_pretrained(model_name, use_auth_token=use_auth_token, from_tf=from_tf)
-
+        model = (
+            AutoModelForMaskedLM.from_pretrained(load_path, from_tf=from_tf)
+            if load_path
+            else AutoModelForMaskedLM.from_pretrained(
+                model_name, use_auth_token=use_auth_token, from_tf=from_tf
+            )
+        )
         super().__init__(model_type, model_name, model, load_path=load_path, use_auth_token=use_auth_token)
 
         device_number = detect_cuda_device_number()
